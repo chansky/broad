@@ -113,10 +113,12 @@ def is_stop_valid(s):
 
 def explore_route_for_stop(route, stop, data):
 	# return true if stop is on route
-	route_data = data[route]
-	for s in route_data:
-		if s == stop:
-			return True
+	for row in data:
+		if row['long_name'] == route:
+			for s in row['stops']:
+				if stop == s['attributes']['name']:
+					return True
+			return False
 	return False
 
 
@@ -146,7 +148,6 @@ def bfs_two_stops(s1, s2, data):
 	# first build graph
 	g = graph.Graph()
 	for row in data:
-		i=1
 		prev_stop = ""
 		for stop in row['stops']:
 			curr_stop = stop['attributes']['name']
@@ -156,7 +157,36 @@ def bfs_two_stops(s1, s2, data):
 			prev_stop = curr_stop
 
 	path = g.BFS(s1,s2)
-	print(path)
+	stop_found = False
+	route_list = []
+	for key_stop in path:
+		for row in data:
+			for stop in row['stops']:
+				curr_stop = stop['attributes']['name']
+				if key_stop == curr_stop and row['long_name'] not in route_list:
+					for x in route_list:
+						if(explore_route_for_stop(x, key_stop, data) == False):
+							route_list.append(row['long_name'])
+							stop_found = True
+							break
+						else:
+							stop_found = True
+							break
+					if(len(route_list) < 1):
+						route_list.append(row['long_name'])
+						stop_found = True
+						break
+			if(stop_found):
+				stop_found = False
+				break
+
+	solution = ""
+	for route in route_list:
+		solution = solution + route + " --> "
+	print(solution[:-5])
+	return solution
+
+	# so now what we should do is get all the unique routes of the stops included in the path
 
 
 

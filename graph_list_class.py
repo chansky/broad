@@ -40,7 +40,6 @@ class Graph:
 			#print(path)
 			node = path[-1]
 			if (e == node):
-				print('end found')
 				return path
   
 			# Get all adjacent vertices of the 
