@@ -26,14 +26,6 @@ class Graph:
 		visited = {}
 		visited[s] = True
 
-		#print(self.graph['Capen Street'])
-		#print(self.graph['Mattapan'])
-		#print(self.graph['Downtown Crossing'])
-		#print(self.graph['Chinatown'])
-		#print(self.graph['Charles/MGH'])
-		#print(self.graph['Park Street'])
-
-
 		while queue:
 			#print(queue)
 			path = queue.pop(0) 
@@ -43,7 +35,7 @@ class Graph:
 				return path
   
 			# Get all adjacent vertices of the 
-			# dequeued vertex s. If a adjacent 
+			# dequeued vertex node. If a adjacent 
 			# has not been visited, then mark it 
 			# visited and enqueue it 
 			for i in self.graph[node]: 
