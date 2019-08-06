@@ -1,3 +1,0 @@
-INSTRUCTIONS:
-1) source broad_env/bin/activate
-
