@@ -24,7 +24,6 @@ get_stop_data = lib.get_all_stops_data(subway_results)
 ### QUESTION 3
 stop_1 = "Alewife"
 stop_2 = "Ruggles"
-#lib.get_rail_route_given_stops(stop_1, stop_2, get_stop_data)
 path = lib.bfs_two_stops(stop_1, stop_2, get_stop_data)
 
 

@@ -7,14 +7,6 @@ import graph_list_class as graph
 
 headers = {'Content-Type': 'application/json'}
 
-class ListNode:
-	def __init__(self, data):
-		# store data
-		self.data = data
-		# store reference (next item)
-		self.next = None
-		return
-
 def handle_bad_status(code, message=""):
 	if (len(message)<1):
 		return "Something went wrong, status code: {}".format(code)
@@ -108,6 +100,7 @@ def get_connecting_routes(data):
 	return result[:-1], stop_count_dict
 
 def is_stop_valid(s):
+	# function that could return whether or not the stop exists
 	return True
 
 
@@ -120,28 +113,6 @@ def explore_route_for_stop(route, stop, data):
 					return True
 			return False
 	return False
-
-
-def get_routes_connected_to_this_route(route, data):
-	# return the list of routes that connect to input route
-	route_data = data[route]
-	connected_routes = []
-	for stop in route_data:
-		for stop in row['stops']:
-			for row in data:
-				if row['long_name'] != route:
-					if(explore_route_for_stop(row['long_name'], stop)):
-						connected_routes.append(row['long_name'])
-	return connected_routes
-
-def are_two_routes_connected(r1, r2, data):
-	r1_stops = data[r1]
-	r2_stops = data[r2]
-	for stop in r1_stops:
-		if stop in r2_stops:
-			return True
-	return False
-
 
 
 def bfs_two_stops(s1, s2, data):
@@ -190,65 +161,7 @@ def bfs_two_stops(s1, s2, data):
 
 
 
-def get_rail_route_given_stops(s1, s2, data):
-	# initial thoughts
-	# 1 -> could have a function that checks if the two input stops are valid (ie they exist)
-	# 2 -> could first see if the two stops are on the same route
-	# 3 -> if not 2, then 
-	# find the route the first stop exists on:
-	# if second stop is on route (case 2) then done and return this route
-	# otherwise find all routes connected to this route
-	# see if stop is on any of those connected routes
-	# continue to explore all new connections until all stops have been visited
-	# return the set of routes 
-
-	# first check if stops on the same route
-	lines_needed = {}
-	for row in data:
-		for stop in row['stops']:
-			if stop['attributes']['name'] == s1:
-				# found route with starting stop
-				lines_needed['s1'] = row['long_name']
-			if stop['attributes']['name'] == s2:
-				# found route with ending stop
-				lines_needed['s2'] = row['long_name']
-		if (lines_needed['s1'] == lines_needed['s2']):
-			return lines_needed['s1']
-	# since the above finds us the routes the start and end exist on, if they are connected
-	# then we are also done
-	if (are_two_routes_connected(lines_needed['s1'], lines_needed['s2'])):
-		return lines_needed['s1'] + '-->' + lines_needed['s2']
-
-	# otherwise we now have a dictionary with the two stops and the routes they are on
-	# stop when final_connection_route = s2 route
-	lines_needed['final_connection'] = ''
-	explored_lines = [lines_needed['s1'], lines_needed['s2']]
-	lines_to_explore = get_routes_connected_to_this_route(lines_needed['s1'], data)
-	while(lines_needed['final_connection'] != lines_needed['s2'] and len(explored_lines) < len(data) and len(lines_to_explore) > 0):
-		route = lines_to_explore.pop()
-		explored_lines.append(route)
-		if (are_two_routes_connected(route, lines_needed['s2'])):
-			lines_needed['final_connection'] = route
-			break
-		else:
-			routes_to_explore = get_routes_connected_to_this_route(route)
-			lines_needed[route] = route
-			for new_route in routes_to_explore:
-				# only expore routes we have not looked at already
-				if new_route not in explored_lines:
-					lines_to_explore.append(new_route)
-
-	if (lines_needed['final_connection'] == lines_needed['s2']):
-		solution = ""
-		for route in lines_needed:
-			solution = route + " -->"
-		return solution
-	else:
-		return 'no route exists'
-
-
-
-
 #exercise for extension - add in commuter rail or bus routes
+#exercise for extension - what if a stop is removed or closed
 
 
